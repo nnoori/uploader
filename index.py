@@ -13,8 +13,12 @@ import itertools
 web.config.debug = False
 
 # Configuration Settings
-uploadpath = '/home/http/pyther.net/uploads' #Physical Path to file uploads on file system
-uploadurl = 'http://pyther.net/uploads'   #Web Address to said uploads
+# uploadpath = '/home/http/pyther.net/uploads' #Physical Path to file uploads on file system
+# uploadurl = 'http://pyther.net/uploads'   #Web Address to said uploads
+
+# Configuration Settings
+uploadpath = '/var/www/uploader/uploads' #Physical Path to file uploads on file system
+uploadurl = 'http://0.0.0.0/uploads'   #Web Address to said uploads
 
 #Values must be in bytes
 MaxSize=(20 * 1024 * 1024) # 20MB
@@ -35,14 +39,14 @@ urls = (
 app = web.application(urls,globals())
 
 #Session Timeout...
-web.config.session_parameters['timeout'] = 900 #Session Time Out - 15 Minutes 
-web.config.session_parameters['ignore_expiry'] = False  #Defaults sets to true
+web.config.session_parameters['timeout'] = 3600 #Session Time Out - 15 Minutes 
+web.config.session_parameters['ignore_expiry'] = True  #Defaults sets to true
 web.config.session_parameters['expired_message'] = 'Session Expired... Please reload the page and login in again.' #Error message when session expires
 
 #Initalizes and stores session information in sqlite database
 db = web.database(dbn="sqlite", db="app.db")
 store = web.session.DBStore(db, 'sessions')
-session = web.session.Session(app, store, initializer={'login': 0,'userType':'anonymous'})
+session = web.session.Session(app, store, initializer={'login': 1,'userType':'anonymous'})
 
 #Setup Template Rendering
 render = web.template.render('templates/')
@@ -145,13 +149,19 @@ def getUserInfo(user):
 
     lookup=list(db.select('users', dict(name=user), where="name = $name"))
     
+    print "This is the DB output"
+    print lookup
+
     if len(lookup) != 1:
         raise DuplicateDBEntry() #I doubt this is the right error to raise...
 
     name=lookup[0].get('name')
+    print"=============="
+    print name
     credits=lookup[0].get('credits')
     exprdate=lookup[0].get('exprdate')
     usertype=lookup[0].get('usertype')
+    print usertype
 
     return [name, credits, exprdate, usertype]
 
