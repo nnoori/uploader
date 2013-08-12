@@ -17,8 +17,8 @@ web.config.debug = False
 # uploadurl = 'http://pyther.net/uploads'   #Web Address to said uploads
 
 # Configuration Settings
-uploadpath = '/var/www/uploader/uploads' #Physical Path to file uploads on file system
-uploadurl = 'http://0.0.0.0/uploads'   #Web Address to said uploads
+uploadpath = '/var/www/uploader/static/uploads' #Physical Path to file uploads on file system
+uploadurl = 'http://192.168.0.104:8080/static/uploads'   #Web Address to said uploads
 
 #Values must be in bytes
 MaxSize=(20 * 1024 * 1024) # 20MB
@@ -46,7 +46,7 @@ web.config.session_parameters['expired_message'] = 'Session Expired... Please re
 #Initalizes and stores session information in sqlite database
 db = web.database(dbn="sqlite", db="app.db")
 store = web.session.DBStore(db, 'sessions')
-session = web.session.Session(app, store, initializer={'login': 1,'userType':'anonymous'})
+session = web.session.Session(app, store, initializer={'login': 0,'userType':'anonymous'})
 
 #Setup Template Rendering
 render = web.template.render('templates/')
